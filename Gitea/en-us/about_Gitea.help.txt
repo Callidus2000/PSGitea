@@ -1,0 +1,11 @@
+﻿TOPIC
+	about_Gitea
+	
+SHORT DESCRIPTION
+	Explains how to use the Gitea powershell module
+	
+LONG DESCRIPTION
+	<Insert Content here>
+
+KEYWORDS
+	Gitea

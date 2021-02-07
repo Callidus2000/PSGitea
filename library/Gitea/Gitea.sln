@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FE0729A7-58C9-4A5C-909C-88BD6F6B590E}") = "Gitea", "Gitea\Gitea.csproj", "{0D3DBC2A-550A-4F92-B216-19CEE6297E77}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0D3DBC2A-550A-4F92-B216-19CEE6297E77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D3DBC2A-550A-4F92-B216-19CEE6297E77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D3DBC2A-550A-4F92-B216-19CEE6297E77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D3DBC2A-550A-4F92-B216-19CEE6297E77}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D77A7121-B2F8-4518-BB13-A5C71D16E9F7}
+	EndGlobalSection
+EndGlobal

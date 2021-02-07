@@ -1,0 +1,22 @@
+﻿
+# ignore the settings folder and files for VSCode and PSS
+.vscode/*
+*.psproj
+*TempPoint*
+
+# Ignore staging info from Visual Studio
+library/Gitea/.vs/*
+library/Gitea/Gitea/bin/*
+library/Gitea/Gitea/obj/*
+
+# ignore PowerShell Studio MetaData
+Gitea/Gitea.psproj
+Gitea/Gitea.psproj.bak
+Gitea/Gitea.psprojs
+Gitea/Gitea.psproj
+
+# ignore the TestResults
+TestResults/*
+
+# ignore the publishing Directory
+publish/*
