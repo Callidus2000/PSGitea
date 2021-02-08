@@ -48,47 +48,43 @@
 	# [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
 	[CmdletBinding(DefaultParameterSetName = "AccessToken")]
 	Param (
-        [parameter(mandatory = $true, ParameterSetName = "BasicAuth")]
+		[parameter(mandatory = $true, ParameterSetName = "BasicAuth")]
 		[parameter(mandatory = $true, ParameterSetName = "AccessToken")]
-        # [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("Gitea.url")]
-        [string]$Url,
-        [parameter(mandatory = $true, ParameterSetName = "BasicAuth")]
-        [pscredential]$Credential,
+		# [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("Gitea.url")]
+		[string]$Url,
+		[parameter(mandatory = $true, ParameterSetName = "BasicAuth")]
+		[pscredential]$Credential,
 		[parameter(mandatory = $true, ParameterSetName = "AccessToken")]
 		[string]$AccessToken,
 		[switch]$EnableException
 	)
-
-		Write-PSFMessage "ParameterSetName=$($PSCmdlet.ParameterSetName)"
-		$serverRoot=Get-GiteaServerRoot -Url $Url
-		Write-PSFMessage "Stelle Verbindung her zu $serverRoot" -Target $serverRoot
-		if ($PSCmdlet.ParameterSetName -eq 'BasicAuth') {
-			Write-PSFMessage "Basic Auth"
+	$connection = [GiteaConnection]::new()
+	Write-PSFMessage "ParameterSetName=$($PSCmdlet.ParameterSetName)"
+	$connection.serverRoot = Get-GiteaServerRoot -Url $Url
+	$connection.WebServiceRoot = "$($connection.serverRoot)/api"
+	# $connection.Headers.add("accept", "application/json")
+	Write-PSFMessage "Stelle Verbindung her zu $($connection.serverRoot)" -Target $connection.serverRoot
+	if ($PSCmdlet.ParameterSetName -eq 'BasicAuth') {
+		Write-PSFMessage "Basic Auth"
 		$encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("$($Credential.UserName):$($Credential.GetNetworkCredential().Password)"))
-		$basicAuthValue = "Basic $encodedCreds"
+		$connection.Headers.add("Authorization", "Basic $encodedCreds")
 
-		$Headers = @{
-			Authorization = $basicAuthValue
-			accept      = "application/json"
+	}
+	Invoke-PSFProtectedCommand -Action "Connecting to Gitea" -Target $Url -ScriptBlock {
+		$apiCallParameter = @{
+			Connection   = $Connection
+			method       = "Get"
+			Path         = "/v1/user"
+			EnablePaging = $false
 		}
-			$result=Invoke-WebRequest -Uri "$serverRoot/api/v1/user" -Credential $Credential -Method Get -Headers $Headers
-			Write-PSFMessage "result=$result"
-			$result=Invoke-WebRequest -Uri "$serverRoot/api/v1/users/b10057231/tokens" -Credential $Credential -Method Get -Headers $Headers
-			Write-PSFMessage "result=$result"
-			# $connection = [Gitea]::new($Credential, $Url)
-			# Invoke-PSFProtectedCommand -ActionString "Connect-Gitea.Connecting" -ActionStringValues $Url -Target $Url -ScriptBlock {
-			# 	# $connection = [Gitea]::new($Credential.username, $Credential.GetNetworkCredential().password, $Url)
-			# 	$connection = [Gitea]::new($Credential, $Url)
-			# } -PSCmdlet $PSCmdlet  -EnableException $EnableException
-		}
-		# else{
-		# 	if ($PSCmdlet.ParameterSetName -ne 'AccessToken') {
-		# 		Write-PSFMessage "Aquiring AccessToken with splatting, ParameterSetName=$($PSCmdlet.ParameterSetName)"
-		# 		$AccessToken=Request-GiteaOAuthToken @PSBoundParameters
-		# 	}
-		# 	$connection = [Gitea]::new($AccessToken,$Url)
-		# }
-		if (Test-PSFFunctionInterrupt) { return }
-		Write-PSFMessage -string "Connect-Gitea.Connected"
-		$connection
+		# $result = Invoke-GiteaAPI @apiCallParameter
+		$result=Get-GiteaCurrentAccount -Connection $Connection
+	} -PSCmdlet $PSCmdlet  -EnableException $EnableException
+	if (Test-PSFFunctionInterrupt) { return }
+	# Write-PSFMessage "result=$result"
+	# Write-PSFMessage "login=$($result.login)"
+	$connection.AuthenticatedUser = $result.login
+	Write-PSFMessage "Successfully connected with user $($connection.AuthenticatedUser)"
+	$connection
+	# $result
 }

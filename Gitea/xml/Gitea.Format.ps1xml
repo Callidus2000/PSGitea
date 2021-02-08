@@ -1,6 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-16"?>
 <Configuration>
 	<ViewDefinitions>
+		<!-- GiteaConnection -->
+		<View>
+			<Name>GiteaConnection</Name>
+			<ViewSelectedBy>
+				<TypeName>GiteaConnection</TypeName>
+			</ViewSelectedBy>
+			<TableControl>
+				<AutoSize/>
+				<TableHeaders>
+					<TableColumnHeader/>
+					<TableColumnHeader/>
+				</TableHeaders>
+				<TableRowEntries>
+					<TableRowEntry>
+						<TableColumnItems>
+							<TableColumnItem>
+								<PropertyName>ServerRoot</PropertyName>
+							</TableColumnItem>
+							<TableColumnItem>
+								<PropertyName>AuthenticatedUser</PropertyName>
+							</TableColumnItem>
+						</TableColumnItems>
+					</TableRowEntry>
+				</TableRowEntries>
+			</TableControl>
+		</View>
 		<!-- Foo.Bar -->
 		<View>
 			<Name>Foo.Bar</Name>
