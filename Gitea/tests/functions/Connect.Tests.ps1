@@ -17,40 +17,24 @@ Describe  "Connection tests" {
             $connection = Connect-Gitea -Url "$fqdn" -Credential $wrongCreds
             $connection | Should -BeNullOrEmpty
         }
-        Context "Direct login with Connect-Gitea without explicit usage of Request-GiteaOAuthToken"{
-            It "Connect with grant_type=password"{
+        Context "Direct login with Connect-Gitea"{
+            It "Connect with Credentials"{
                 $connection=Connect-Gitea -url $fqdn -Credential $credentials
                 $connection | Should -Not -BeNullOrEmpty
             }
         }
-    #     Context "Create an Refresh Token and a Access Token based on it" {
-    #         beforeall {
-    #             $refreshToken = Request-GiteaOAuthToken -url $fqdn -ClientID $ClientID -clientSecret $clientSecret -Credential $credentials -TokenType "refresh"
-    #             $accessToken = Request-GiteaOAuthToken -url $fqdn -ClientID $ClientID -clientSecret $clientSecret -RefreshToken $refreshToken
-    #         }
-    #         It "Access token gets generated from RefrehToken" {
-    #             $refreshToken | Should -Match "\w{32}" -Because "RefreshToken is alphanumeric and 32 long"
-    #             $accessToken | Should -Match "\w{32}" -Because "AccessToken is alphanumeric and 32 long"
-    #             $accessToken | Should -not -Be $refreshToken -Because "AccessToken is different from RefreshToken"
-    #         }
-    #         It "Login with generated access token" {
-    #             $accessToken | Should -Match "\w{32}" -Because "AccessToken is alphanumeric and 32 long"
-    #             $connection=Connect-Gitea -Url "https://$fqdn" -AccessToken $accessToken
-    #             $connection | Should -Not -BeNullOrEmpty
-    #             Test-GiteaConnection -Connection $connection | Should -BeTrue
-    #         }
-    #         It "Login with refresh token" {
-    #             $refreshToken | Should -Match "\w{32}" -Because "AccessToken is alphanumeric and 32 long"
-    #             $connection = Connect-Gitea -Url "https://$fqdn" -RefreshToken $refreshToken -ClientID $ClientID -clientSecret $clientSecret
-    #             $connection | Should -Not -BeNullOrEmpty
-    #             Test-GiteaConnection -Connection $connection | Should -BeTrue
-    #         }
-    #         It "Connection not pingable" {
-    #             $accessToken | Should -Match "\w{32}" -Because "AccessToken is alphanumeric and 32 long"
-    #             $connection=Connect-Gitea -Url "https://$fqdn" -AccessToken $accessToken
-    #             $connection.webServiceRoot="$($connection.webServiceRoot)/notAvailable"
-    #             { Test-GiteaConnection -Connection $connection } | Should -Throw "API not pingable*"
-    #         }
-    #     }
-    }
+        Context "Login with Connect-Gitea with newly created access token"{
+            It "Connect with access token"{
+                $connection=Connect-Gitea -url $fqdn -Credential $credentials
+                $connection | Should -Not -BeNullOrEmpty
+                $accessToken=New-GiteaAccessToken -Connection $connection -Name "pester"
+                $secondConnection = Connect-Gitea -url $fqdn -AccessToken $accessToken.sha1
+                $secondConnection | Should -Not -BeNullOrEmpty
+                $secondConnection.AuthenticatedUser | Should -Be $connection.AuthenticatedUser
+                Remove-GiteaAccessToken -Connection $connection -AccessToken pester
+                $secondConnection = Connect-Gitea -url $fqdn -AccessToken $accessToken.sha1
+                $secondConnection | Should -BeNullOrEmpty
+            }
+        }
+   }
 }

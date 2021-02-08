@@ -41,8 +41,10 @@
 	# Functions to export from this module
 	FunctionsToExport = @(
 		'Connect-Gitea'
-		'Invoke-GiteaApi'
 		'Get-GiteaCurrentAccount'
+		'Invoke-GiteaApi'
+		'New-GiteaAccessToken'
+		'Remove-GiteaAccessToken'
 		)
 
 	# Cmdlets to export from this module
