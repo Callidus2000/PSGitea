@@ -1,4 +1,4 @@
-class GiteaConnection {
+﻿class GiteaConnection {
 
     # properties
     hidden[System.Collections.Hashtable]$Headers

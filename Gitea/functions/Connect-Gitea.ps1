@@ -69,22 +69,15 @@
 		$encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("$($Credential.UserName):$($Credential.GetNetworkCredential().Password)"))
 		$connection.Headers.add("Authorization", "Basic $encodedCreds")
 
+	}elseif ($PSCmdlet.ParameterSetName -eq 'AccessToken') {
+		Write-PSFMessage "AccessToken"
+		$connection.Headers.add("Authorization", "token $AccessToken")
 	}
 	Invoke-PSFProtectedCommand -Action "Connecting to Gitea" -Target $Url -ScriptBlock {
-		$apiCallParameter = @{
-			Connection   = $Connection
-			method       = "Get"
-			Path         = "/v1/user"
-			EnablePaging = $false
-		}
-		# $result = Invoke-GiteaAPI @apiCallParameter
 		$result=Get-GiteaCurrentAccount -Connection $Connection
+		$connection.AuthenticatedUser = $result.login
 	} -PSCmdlet $PSCmdlet  -EnableException $EnableException
 	if (Test-PSFFunctionInterrupt) { return }
-	# Write-PSFMessage "result=$result"
-	# Write-PSFMessage "login=$($result.login)"
-	$connection.AuthenticatedUser = $result.login
 	Write-PSFMessage "Successfully connected with user $($connection.AuthenticatedUser)"
 	$connection
-	# $result
 }
