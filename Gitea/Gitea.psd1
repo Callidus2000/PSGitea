@@ -3,19 +3,19 @@
 	RootModule = 'Gitea.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '1.0.0'
+	ModuleVersion = '0.1.0'
 
 	# ID used to uniquely identify this module
-	GUID = '1b0a9ab4-c668-4774-8ecc-be0f46beae84'
+	GUID = '21d06ae3-a872-4cb5-8aae-9fa3257b2c24'
 
 	# Author of this module
-	Author = 'b10057231'
+	Author = 'Sascha Spiekermann'
 
 	# Company or vendor of this module
-	CompanyName = 'MyCompany'
+	# CompanyName = 'MyCompany'
 
 	# Copyright statement for this module
-	Copyright = 'Copyright (c) 2021 b10057231'
+	Copyright = 'Copyright (c) 2021 Sascha Spiekermann'
 
 	# Description of the functionality provided by this module
 	Description = 'API wrapper for accessing a Gitea repository server'
@@ -72,10 +72,10 @@
 			# Tags = @()
 
 			# A URL to the license for this module.
-			# LicenseUri = ''
+			LicenseUri = 'https://github.com/Callidus2000/PSGitea/LICENSE'
 
 			# A URL to the main website for this project.
-			# ProjectUri = ''
+			ProjectUri = 'https://github.com/Callidus2000/PSGitea'
 
 			# A URL to an icon representing this module.
 			# IconUri = ''
