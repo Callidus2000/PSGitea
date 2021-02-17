@@ -3,7 +3,7 @@
 	RootModule = 'Gitea.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '0.1.0'
+	ModuleVersion = '0.1.1'
 
 	# ID used to uniquely identify this module
 	GUID = '21d06ae3-a872-4cb5-8aae-9fa3257b2c24'
@@ -42,6 +42,7 @@
 	FunctionsToExport = @(
 		'Connect-Gitea'
 		'Get-GiteaCurrentAccount'
+		'Get-GiteaOrganisation'
 		'Invoke-GiteaApi'
 		'New-GiteaAccessToken'
 		'Remove-GiteaAccessToken'

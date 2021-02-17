@@ -62,7 +62,13 @@
     )
     $uri = $connection.webServiceRoot + $path
     if ($UrlParameter) {
-        Write-PSFMessage "Wandle URL Parameter in String um und hänge diese an die URI"
+        Write-PSFMessage "Converting UrlParameter to a Request-String and add it to the path"
+        Write-PSFMessage "$($UrlParameter|ConvertTo-Json)"
+        if ($UrlParameter.Contains("limit")) {
+            If (($UrlParameter["page"] -lt 1) -and ($UrlParameter["limit"] -gt 0)) {
+                $UrlParameter.page = 1
+            }
+        }
         $parameterString = (Get-EncodedParameterString($UrlParameter))
         $uri = $uri + '?' + $parameterString.trim("?")
     }
@@ -86,28 +92,40 @@
         if ($tempBody.ContainsKey("password")) { $tempBody.set_Item("password", "*****") }
     }
     if ($tempBody) {
-        Write-PSFMessage ("Rufe {0} mit {1} auf" -f $uri, ($tempBody  | Remove-NullFromHashtable -Json))
+        Write-PSFMessage ("Invoking Uri {0} with {1} body" -f $uri, ($tempBody  | Remove-NullFromHashtable -Json))
     }
     else {
-        Write-PSFMessage ("Rufe {0} auf" -f $uri)
+        Write-PSFMessage ("Invoking Uri {0}" -f $uri)
     }
 
     try {
         Write-PSFMessage -Level Debug "restAPIParameter= $($restAPIParameter|ConvertTo-Json -Depth 5)"
-        $result = Invoke-RestMethod @restAPIParameter
+        $response = Invoke-WebRequest @restAPIParameter
+        $result = $response.Content | ConvertFrom-Json
+        Write-PSFMessage "Response-Header: $($response.Headers|Format-Table|Out-String)" -Level Debug
         Write-PSFMessage -Level Debug "result= $($result|ConvertTo-Json -Depth 5)"
-        if ($EnablePaging -and ($result -is [array])) {
-            Write-PSFMessage "Paging enabled, aber keine Range zurückgeliefert" -Level Warning
+        if ($EnablePaging -and (-not ($response.Headers["X-Total-Count"]))) {
+            Write-PSFMessage "Paging enabled, but no X-Total-Count header" -Level Warning
         }
         elseif ($EnablePaging) {
-            Write-PSFMessage "Paging enabled, starte Schleife, result.range=$($result.range)"
-            $allItems = ($result.items)
-            write-psfmessage "Anzahl ermittelter Items: $($allItems.count)"
-            $UrlParameter.limit = $result.range.limit
-            $UrlParameter.offset = $result.range.offset
-            while ($result.range.total -gt $allItems.count) {
-                Write-PSFMessage "result.range.total=$($result.range.total) -gt allItems.count=$($allItems.count)"
-                $UrlParameter.offset = $allItems.count
+            $totalCount = $response.Headers["X-Total-Count"]
+            Write-PSFMessage "Paging enabled, starting loop, totalCount=$totalCount"
+            $allItems = $result
+            $resultCount = ($result | Measure-Object).count
+            write-psfmessage "Current Item-Count: $(($allItems|Measure-Object).count)"
+            # If no Page was given as a parameter then the returned object count as the configured limit
+            if (!($UrlParameter.limit)) {
+                $UrlParameter.limit = $resultCount
+            }
+            # If no Page was given as a parameter then it was page 1 we just requested
+            if (!($UrlParameter.page)) {
+                $UrlParameter.page = 1
+            }
+
+            while ($totalCount -gt $allItems.count) {
+                # Fetch the next page of items
+                $UrlParameter.page = $UrlParameter.page + 1
+                Write-PSFMessage "totalCount=$totalCount -gt allItems.count=$($allItems.count)"
                 $nextParameter = @{
                     Connection     = $Connection
                     Path           = $Path
@@ -115,12 +133,11 @@
                     UrlParameter   = $UrlParameter
                     Method         = $Method
                     HideParameters = $HideParameters
+                    # NO EnablePaging in the next Call
                 }
-                write-psfmessage "Rufe API auf mit $($nextParameter|convertto-json -depth 10)" -Level Debug
-                write-psfmessage "Rufe API auf mit URL Params auf $($UrlParameter|convertto-json -depth 10)"
-
-                $result = Invoke-DracoonAPI @nextParameter
-                $allItems += ($result.items)
+                write-psfmessage "InvokeAPI with Params= $($nextParameter|convertto-json -depth 10)" -Level Debug
+                $result = Invoke-GiteaAPI @nextParameter
+                $allItems += ($result)
             }
             return $allItems
         }
