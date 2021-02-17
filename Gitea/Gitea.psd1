@@ -72,7 +72,7 @@
 			# Tags = @()
 
 			# A URL to the license for this module.
-			LicenseUri = 'https://github.com/Callidus2000/PSGitea/LICENSE'
+			LicenseUri = 'https://github.com/Callidus2000/PSGitea/blob/master/LICENSE'
 
 			# A URL to the main website for this project.
 			ProjectUri = 'https://github.com/Callidus2000/PSGitea'
