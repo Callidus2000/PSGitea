@@ -18,7 +18,7 @@
     #>
     param (
         [parameter(Mandatory)]
-        [GiteaConnection]$Connection
+        $Connection
     )
     $apiCallParameter = @{
         Connection      = $Connection

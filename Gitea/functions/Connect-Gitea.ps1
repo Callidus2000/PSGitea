@@ -58,11 +58,10 @@
 		[string]$AccessToken,
 		[switch]$EnableException
 	)
-	$connection = [GiteaConnection]::new()
+	$connection = Get-ARAHConnection -Url $Url -APISubPath "/api"
+	$connection.ContentType = "application/json;charset=UTF-8"
 	Write-PSFMessage "ParameterSetName=$($PSCmdlet.ParameterSetName)"
-	$connection.serverRoot = Get-GiteaServerRoot -Url $Url
-	$connection.WebServiceRoot = "$($connection.serverRoot)/api"
-	# $connection.Headers.add("accept", "application/json")
+
 	Write-PSFMessage "Stelle Verbindung her zu $($connection.serverRoot)" -Target $connection.serverRoot
 	if ($PSCmdlet.ParameterSetName -eq 'BasicAuth') {
 		Write-PSFMessage "Basic Auth"

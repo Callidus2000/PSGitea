@@ -31,7 +31,7 @@
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
     param (
         [parameter(Mandatory)]
-        [GiteaConnection]$Connection,
+        $Connection,
         [parameter(Mandatory)]
         [string]$Name,
         [string]$UserName

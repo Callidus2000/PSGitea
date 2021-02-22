@@ -27,7 +27,7 @@
     #>
     param (
         [parameter(Mandatory)]
-        [GiteaConnection]$Connection,
+        $Connection,
         $Limit=0,
         $Page=0,
         $EnablePaging=$true
