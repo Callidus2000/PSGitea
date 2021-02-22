@@ -1,12 +1,4 @@
 Describe  "Connection tests" {
-    Describe "Test internal ServerRoot-Helper" {
-        It "Check converting a given URL" {
-            Get-GiteaServerRoot "my.server.de" | Should -Be "https://my.server.de"
-            Get-GiteaServerRoot "my.server.de/" | Should -Be "https://my.server.de"
-            Get-GiteaServerRoot "http://my.server.de" | Should -Be "https://my.server.de"
-            Get-GiteaServerRoot "http://my.server.de/" | Should -Be "https://my.server.de"
-        }
-    }
     Context "OAuth registration available" {
         BeforeAll {
             $credentials = Get-PSFConfigValue "Gitea.pester.credentials" -ErrorAction Stop
