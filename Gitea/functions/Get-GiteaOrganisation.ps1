@@ -20,6 +20,7 @@
 
     .EXAMPLE
     Get-GiteaOrganisation -Connection $connection
+
     Returns all existing organisations
 
     .NOTES
@@ -28,18 +29,18 @@
     param (
         [parameter(Mandatory)]
         $Connection,
-        $Limit=0,
-        $Page=0,
-        $EnablePaging=$true
+        $Limit = 0,
+        $Page = 0,
+        $EnablePaging = $true
     )
     $apiCallParameter = @{
-        Connection      = $Connection
-        method          = "Get"
-        Path            = "/v1/orgs"
-        UrlParameter=@{
-        limit =$Limit
-        page=$Page
-    }
+        Connection   = $Connection
+        method       = "Get"
+        Path         = "/v1/orgs"
+        UrlParameter = @{
+            limit = $Limit
+            page  = $Page
+        }
         EnablePaging = $EnablePaging
         # EnableException = $true
     }

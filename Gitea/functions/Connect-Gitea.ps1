@@ -38,8 +38,8 @@
 
 	.EXAMPLE
 	$connection=Connect-Gitea -Url $url -ClientID $clientId -ClientSecret $clientSecret -Credential $cred
-	Connect directly with OAuth and a Credential-Object
 
+	Connect directly with OAuth and a Credential-Object
 
 	.NOTES
 	#>
