@@ -11,8 +11,6 @@
             $allItems = $result
             $resultCount = ($result | Measure-Object).count
             write-psfmessage "Current Item-Count: $(($allItems|Measure-Object).count)" -ModuleName Gitea -FunctionName 'Gitea-PagingHandler'
-            Write-PSFMessage -Level Host -Message "InitialAllItems: $($allItems|ft|Out-String)"
-            Write-PSFMessage -Level Host -Message "InitialAllItems: $($allItems.getType()|Out-String)"
             # If no Page was given as a parameter then the returned object count as the configured limit
             if (!($UrlParameter.limit)) {
                 $UrlParameter.limit = $resultCount
@@ -32,19 +30,13 @@
                     Body           = $Body
                     UrlParameter   = $UrlParameter
                     Method         = $Method
-                    HideParameters = $HideParameters
                     # NO EnablePaging in the next Call
                 }
                 write-psfmessage "InvokeAPI with Params= $($nextParameter|convertto-json -depth 10)" -Level Debug -ModuleName Gitea -FunctionName 'Gitea-PagingHandler'
-                Write-PSFMessage -Level Host -Message "AllItems: $($allItems|ft|Out-String)"
                 $result = Invoke-GiteaAPI @nextParameter
-                Write-PSFMessage -Level Host -Message "Newresult: $($result|ft|Out-String)"
-                Write-PSFMessage -Level Host -Message "allItems.count.before: $($allItems.count)"
                 $allItems += ($result)
-                Write-PSFMessage -Level Host -Message "allItems.count.after: $($allItems.count)"
             }
 
-            Write-PSFMessage -Level Host -Message "Return allItems: $($allItems|ft|Out-String)"
             return $allItems
         }
     }

@@ -27,9 +27,6 @@
     .PARAMETER InFile
     File which should be transfered during the Request.
 
-    .PARAMETER HideParameters
-    If set to $true the password is hidden from logging
-
     .PARAMETER EnablePaging
     Wenn die API mit Paging arbeitet, kann über diesn Parameter ein automatisches Handling aktivieren.
     Dann werden alle Pages abgehandelt und nur die items zurückgeliefert.
@@ -54,7 +51,6 @@
         [Microsoft.Powershell.Commands.WebRequestMethod]$Method,
         [Hashtable]$Body,
         [Hashtable]$UrlParameter,
-        [bool]$HideParameters = $false,
         [string]$ContentType = "application/json;charset=UTF-8",
         [string]$InFile,
         [bool]$EnableException = $true,
